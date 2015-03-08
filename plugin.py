@@ -52,23 +52,28 @@ CPU_MAPPING = (
 )
 
 INSTANCE_MAPPING = (
-        ('OS_INSTANCE_SUM', 'sum', False)
+        ('OS_INSTANCE_SUM', 'sum', False),
+	('OS_INSTANCE_MAX', 'max', False)
 )
 
 MEMORY_MAPPING = (
-        ('OS_MEMORY_SUM', 'sum', False)
+        ('OS_MEMORY_SUM', 'sum', False),
+	('OS_MEMORY_AVG', 'avg', False)
 )
 
 MEMORY_USAGE_MAPPING = (
-        ('OS_MEMORY_USAGE_SUM', 'sum', False)
+        ('OS_MEMORY_USAGE_SUM', 'sum', False),
+	('OS_MEMORY_USAGE_AVG', 'avg', False)
 )
 
 VOLUME_MAPPING = (
-        ('OS_VOLUME_SUM', 'sum', False)
+        ('OS_VOLUME_SUM', 'sum', False),
+	('OS_VOLUME_AVG', 'avg', False)
 )
 
 IMAGE_MAPPING = (
-        ('OS_IMAGE_SUM', 'sum', False)
+        ('OS_IMAGE_SUM', 'sum', False),
+	('OS_IMAGE_AVG', 'avg', False)
 )
 
 IMAGE_SIZE_MAPPING = (
@@ -96,8 +101,7 @@ NETWORK_OUT_MAPPING = (
         ('OS_NETWORK_OUT_BYTES_AVG', 'avg', False)
 )
 
-network.incoming.bytes.rate
-disk.write.requests.rate
+MAPPING = {'cpu_util': [CPU_UTIL_MAPPING, None], 'cpu': [CPU_MAPPING, None], 'instance': [INSTANCE_MAPPING, None], 'memory': [MEMORY_MAPPING, None], 'memory.usage': [MEMORY_USAGE_MAPPING, None], 'volume': [VOLUME_MAPPING, None], 'image': [IMAGE_MAPPING, None], 'image.size': [IMAGE_SIZE_MAPPING, None], 'disk.read.requests.rate': [DISK_READ_MAPPING, None], 'disk.write.requests.rate': [DISK_WRITE_MAPPING, None], 'network.incoming.bytes': [NETWORK_IN_MAPPING, None], 'network.outgoing.bytes': [NETWORK_OUT_MAPPING, None]}
 
 class OpenstackPlugin(object):
     def __init__(self, boundary_metric_prefix):
@@ -121,6 +125,10 @@ class OpenstackPlugin(object):
 	return self._cclient.statistics.list(meter_name=cmd, period=300)
 
     def get_stats(self):
+	for source in MAPPING:
+	    data = self._send_cmd(source)
+	    if len(data) > 0:
+	    	MAPPING[source][1] = data[-1]
 	return self._send_cmd('cpu_util')[-1]
 
     def get_stats_with_retries(self, *args, **kwargs):
@@ -139,20 +147,21 @@ class OpenstackPlugin(object):
         raise Exception("Max retries exceeded retrieving data")
 
     def handle_metrics(self, data):
-	for boundary_name, accumulate in METRICS:
-	    metric_name = boundary_name.lower()
-            try:
-		value = data[boundary_name.lower()].strip()
-            except KeyError:
-                value = None
+	for group in MAPPING:
+		maptuple = MAPPING[group][0]
+	    	valueobj = MAPPING[group][1]
+		#print (valueobj)
+	    	if valueobj != None:
+	    	    for boundary_name, column, accumulate in maptuple:
+		        value = (getattr(valueobj, column))
+            
+            	        if not value:
+                	    continue
 
-            if not value:
-                continue
+            	    	if accumulate:
+                	    value = self.accumulator.accumulate(metric_name, int(value) )
 
-            if accumulate:
-                value = self.accumulator.accumulate(metric_name, int(value) )
-
-            boundary_plugin.boundary_report_metric(self.boundary_metric_prefix + boundary_name, value)
+            	    	boundary_plugin.boundary_report_metric(self.boundary_metric_prefix + boundary_name, value)
 
     def main(self):
         logging.basicConfig(level=logging.ERROR, filename=self.settings.get('log_file', None))
