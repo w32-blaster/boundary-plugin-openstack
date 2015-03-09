@@ -43,62 +43,62 @@ CPU_UTIL_MAPPING = (
 	('OS_CPUUTIL_AVG', 'avg', False),
 	('OS_CPUUTIL_SUM', 'sum', False),
 	('OS_CPUUTIL_MIN', 'min', False),
-        ('OS_CPUUTIL_MAX', 'max', False)	
+    ('OS_CPUUTIL_MAX', 'max', False)
 )
 
 CPU_MAPPING = (
-        ('OS_CPU_AVG', 'avg', False),
-        ('OS_CPU_SUM', 'sum', False)
+    ('OS_CPU_AVG', 'avg', False),
+    ('OS_CPU_SUM', 'sum', False)
 )
 
 INSTANCE_MAPPING = (
-        ('OS_INSTANCE_SUM', 'sum', False),
+    ('OS_INSTANCE_SUM', 'sum', False),
 	('OS_INSTANCE_MAX', 'max', False)
 )
 
 MEMORY_MAPPING = (
-        ('OS_MEMORY_SUM', 'sum', False),
+    ('OS_MEMORY_SUM', 'sum', False),
 	('OS_MEMORY_AVG', 'avg', False)
 )
 
 MEMORY_USAGE_MAPPING = (
-        ('OS_MEMORY_USAGE_SUM', 'sum', False),
+    ('OS_MEMORY_USAGE_SUM', 'sum', False),
 	('OS_MEMORY_USAGE_AVG', 'avg', False)
 )
 
 VOLUME_MAPPING = (
-        ('OS_VOLUME_SUM', 'sum', False),
+    ('OS_VOLUME_SUM', 'sum', False),
 	('OS_VOLUME_AVG', 'avg', False)
 )
 
 IMAGE_MAPPING = (
-        ('OS_IMAGE_SUM', 'sum', False),
+    ('OS_IMAGE_SUM', 'sum', False),
 	('OS_IMAGE_AVG', 'avg', False)
 )
 
 IMAGE_SIZE_MAPPING = (
-        ('OS_IMAGE_SIZE_SUM', 'sum', False),
+    ('OS_IMAGE_SIZE_SUM', 'sum', False),
 	('OS_IMAGE_SIZE_AVG', 'avg', False)
 )
 
 DISK_READ_MAPPING = (
-        ('OS_DISK_READ_RATE_SUM', 'sum', False),
+    ('OS_DISK_READ_RATE_SUM', 'sum', False),
 	('OS_DISK_READ_RATE_AVG', 'avg', False)
 )
 
 DISK_WRITE_MAPPING = (
-        ('OS_DISK_WRITE_RATE_SUM', 'sum', False),
-        ('OS_DISK_WRITE_RATE_AVG', 'avg', False)
+    ('OS_DISK_WRITE_RATE_SUM', 'sum', False),
+    ('OS_DISK_WRITE_RATE_AVG', 'avg', False)
 )
 
 NETWORK_IN_MAPPING = (
-        ('OS_NETWORK_IN_BYTES_SUM', 'sum', False),
-        ('OS_NETWORK_IN_BYTES_AVG', 'avg', False)
+    ('OS_NETWORK_IN_BYTES_SUM', 'sum', False),
+    ('OS_NETWORK_IN_BYTES_AVG', 'avg', False)
 )
 
 NETWORK_OUT_MAPPING = (
-        ('OS_NETWORK_OUT_BYTES_SUM', 'sum', False),
-        ('OS_NETWORK_OUT_BYTES_AVG', 'avg', False)
+    ('OS_NETWORK_OUT_BYTES_SUM', 'sum', False),
+    ('OS_NETWORK_OUT_BYTES_AVG', 'avg', False)
 )
 
 MAPPING = {'cpu_util': [CPU_UTIL_MAPPING, None], 'cpu': [CPU_MAPPING, None], 'instance': [INSTANCE_MAPPING, None], 'memory': [MEMORY_MAPPING, None], 'memory.usage': [MEMORY_USAGE_MAPPING, None], 'volume': [VOLUME_MAPPING, None], 'image': [IMAGE_MAPPING, None], 'image.size': [IMAGE_SIZE_MAPPING, None], 'disk.read.requests.rate': [DISK_READ_MAPPING, None], 'disk.write.requests.rate': [DISK_WRITE_MAPPING, None], 'network.incoming.bytes': [NETWORK_IN_MAPPING, None], 'network.outgoing.bytes': [NETWORK_OUT_MAPPING, None]}
@@ -150,16 +150,15 @@ class OpenstackPlugin(object):
 	for group in MAPPING:
 		maptuple = MAPPING[group][0]
 	    	valueobj = MAPPING[group][1]
-		#print (valueobj)
 	    	if valueobj != None:
 	    	    for boundary_name, column, accumulate in maptuple:
 		        value = (getattr(valueobj, column))
             
             	        if not value:
-                	    continue
+                	        continue
 
             	    	if accumulate:
-                	    value = self.accumulator.accumulate(metric_name, int(value) )
+                	        value = self.accumulator.accumulate(group, int(value) )
 
             	    	boundary_plugin.boundary_report_metric(self.boundary_metric_prefix + boundary_name, value)
 

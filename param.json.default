@@ -1,31 +1,37 @@
 {
-    "description": "Metric collector for Zookeeper",
+    "description": "Metric collector for Openstack",
     "command": "python -u plugin.py",
     "icon" : "icon.png",
-    "core_name": "collection1",
+    "service_password" :: "xxxxxx",
     "metrics" : [
-        "ZK_WATCH_COUNT",
-	"ZK_NUM_ALIVE_CONNECTIONS",
-	"ZK_OPEN_FILE_DESCRIPTOR_COUNT",
-	"ZK_SERVER_STATE",
-	"ZK_PACKETS_SENT",
-	"ZK_PACKETS_RECEIVED",
-	"ZK_MIN_LATENCY",
-	"ZK_EPHEMERALS_COUNT",
-	"ZK_ZNODE_COUNT",
-	"ZK_MAX_FILE_DESCRIPTOR_COUNT"],
+        "OS_CPUUTIL_AVG",
+        "OS_CPUUTIL_SUM",
+        "OS_CPUUTIL_MIN",
+        "OS_CPUUTIL_MAX",
+        "OS_CPU_AVG",
+        "OS_CPU_SUM",
+        "OS_INSTANCE_SUM",
+        "OS_INSTANCE_MAX",
+        "OS_MEMORY_SUM",
+        "OS_MEMORY_AVG",
+        "OS_MEMORY_USAGE_SUM",
+        "OS_MEMORY_USAGE_AVG",
+        "OS_VOLUME_SUM",
+        "OS_VOLUME_AVG",
+        "OS_IMAGE_SUM",
+        "OS_IMAGE_AVG",
+        "OS_IMAGE_SIZE_SUM",
+        "OS_IMAGE_SIZE_AVG",
+        "OS_DISK_READ_RATE_SUM",
+        "OS_DISK_READ_RATE_AVG",
+        "OS_DISK_WRITE_RATE_SUM",
+        "OS_DISK_WRITE_RATE_AVG",
+        "OS_NETWORK_IN_BYTES_SUM",
+        "OS_NETWORK_IN_BYTES_AVG",
+        "OS_NETWORK_OUT_BYTES_SUM",
+        "OS_NETWORK_OUT_BYTES_AVG"
+	],
     "dashboards" : [{"name" : "Zookeeper",
         "layout" :
-"d-w=4&d-h=4&d-pad=5&d-bg=none&d-g-ZK_WATCH_COUNT=0-0-1-1&d-g-ZK_NUM_ALIVE_CONNECTIONS=1-0-1-1&d-g-ZK_OPEN_FILE_DESCRIPTOR_COUNT=0-1-1-1&d-g-ZK_SERVER_STATE=0-2-1-1&d-g-ZK_PACKETS_SENT=1-1-1-1&d-g-ZK_PACKETS_RECEIVED=1-2-1-1&d-g-ZK_MIN_LATENCY=2-2-1-1&d-g-ZK_EPHEMERALS_COUNT=0-3-1-1&d-g-ZK_ZNODE_COUNT=1-3-1-1&d-g-ZK_MAX_FILE_DESCRIPTOR_COUNT=2-3-1-1" }],
-
-    "paramSchema": [
-        {
-            "title": "Zookeeper Stats URL",
-            "name": "stats_url",
-            "description": "The port used to make TCP connection to the Zookeeper stats API endpoint",
-            "type": "integer",
-            "default": "2185",
-            "required": true
-        }
-    ]
+"d-w=4&d-h=4&d-pad=5&d-bg=none&d-g-OS_CPUUTIL_AVG=0-0-1-1&d-g-OS_CPUUTIL_SUM=1-0-1-1&d-g-OS_CPUUTIL_MIN=0-1-1-1&d-g-OS_CPUUTIL_MAX=0-2-1-1&d-g-OS_CPU_AVG=1-1-1-1&d-g-OS_CPU_SUM=1-2-1-1&d-g-OS_INSTANCE_SUM=2-2-1-1&d-g-OS_INSTANCE_MAX=0-3-1-1&d-g-OS_MEMORY_SUM=1-3-1-1&d-g-OS_MEMORY_AVG=2-3-1-1" }]
 }

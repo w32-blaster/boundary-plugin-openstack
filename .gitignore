@@ -53,6 +53,9 @@ docs/_build/
 # PyBuilder
 target/
 
+# Idea files
+.idea/
+
 param.json
 reports.log
 deploy_plugin.cmd
